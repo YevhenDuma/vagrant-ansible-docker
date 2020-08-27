@@ -1,0 +1,14 @@
+- name: Destroy redis
+  docker_container:
+    name: redis
+    image: redis:3
+    state: absent
+
+- name: Start redis
+  docker_container:
+    name: redis
+    image: redis:3
+    state: started
+    restart_policy: always
+    expose: 6379
+    ports: "6379:6379"

@@ -1,0 +1,12 @@
+---
+- hosts: all
+  become: yes # This means that all tasks will be executed with sudo
+  vars:
+    python_version: python3.7
+    pip: python3-pip
+    pip_modules: docker
+    ansible_python_interpreter: /usr/bin/python3
+  roles:
+    - role: python
+    - role: docker
+    - role: redis
