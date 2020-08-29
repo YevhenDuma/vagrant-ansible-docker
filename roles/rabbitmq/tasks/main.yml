@@ -1,8 +1,17 @@
 - name: Start rabbitmq
   docker_container:
+    env:
+      RABBITMQ_DEFAULT_USER: "{{ rabbitmq_user }}"
+      RABBITMQ_DEFAULT_PASS: "{{ rabbitmq_password }}"
     name: rabbitmq
-    image: rabbitmq:3
+    image: rabbitmq:3-management
     state: started
     restart_policy: always
-    expose: 5672
-    ports: "5672:5672"
+    exposed_ports:
+      - "5672"
+      - "15672"
+    ports:
+     - "5672:5672"
+     - "15672:15672"
+    networks:
+      - name: "{{ docker_network }}"
