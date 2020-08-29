@@ -12,7 +12,8 @@ Configuration file: [Vagrantfile](Vagrantfile)
 
 Vagrant has next ports forwarded:
 
-* 15672: to access RabbitMQ Management UI from RabbitMQ docker container. Please use credentials configured in [ansible](#Variables) variables.
+* 15672: RabbitMQ Management UI from Primary RabbitMQ docker container. Please use credentials configured in [ansible](#Variables) variables.
+* 15673: RabbitMQ Management UI from Secondary RabbitMQ docker container. Please use credentials configured in [ansible](#Variables) variables.
 
 
 ### Commands
@@ -81,9 +82,5 @@ Provisions docker container with redis.
 
 #### RabbitMQ
 
-Provisions docker container with RabbitMQ.
+Provisions docker containers with RabbitMQ. Two docker containers: primary and secondary. They works together as cluster. Used `lucifer8591/rabbitmq-server:3.7.17` docker image for testing purposes.
 
-##### TODO
-* Implement Ansible Playbook to deploy RabbitMQ cluster in docker containers.
-* After first playbook run, RabbitMQ cluster must be properly initialized.
-* Management interface must be present, admin username and password must be configurable via Ansible variables.
