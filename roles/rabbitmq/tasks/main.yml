@@ -1,0 +1,8 @@
+- name: Start rabbitmq
+  docker_container:
+    name: rabbitmq
+    image: rabbitmq:3
+    state: started
+    restart_policy: always
+    expose: 5672
+    ports: "5672:5672"

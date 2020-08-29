@@ -6,7 +6,11 @@
     pip: python3-pip
     pip_modules: docker
     ansible_python_interpreter: /usr/bin/python3
+    mysql_root_password: 'iu4cheeCiet7oeRa'
+
   roles:
     - role: python
     - role: docker
     - role: redis
+    - role: rabbitmq
+    - role: mysql
