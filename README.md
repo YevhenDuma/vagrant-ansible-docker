@@ -1,6 +1,6 @@
 # Example of Vagrant Ansible and Docker integration
 
-This repository intend to shows integration between ansible and docker. Vagrant is used to provision local virtual server.
+This repository intend to show integration between ansible and docker. Vagrant is used to provision local virtual server.
 
 ## Vagrant
 
@@ -32,7 +32,9 @@ Main configuration file [setup.yml](setup.yml)
 Ansible has next roles:
 * python: to install python version 3.7 (or any other, defined by variable). It also installs pip and pip modules if defined
 * docker: to install docker on host. Requires pip docker module
-* redis: to install redis
+* [redis](#Redis)
+* [mysql](#Mysql)
+* [rabbitmq](#RabbitMQ)
 
 ### Roles
 
