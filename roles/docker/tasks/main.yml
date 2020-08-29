@@ -4,3 +4,8 @@
 # script to `sh` so that it gets executed.
 - name: 'install docker'
   command: 'bash -c "curl -fsSL https://get.docker.com/ | sh"'
+
+- name: Create docker network
+  docker_network:
+    name: "{{ docker_network }}"
+    state: present

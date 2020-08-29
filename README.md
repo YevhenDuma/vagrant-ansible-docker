@@ -8,6 +8,16 @@ As base image used Ububtu 18.04.
 
 Configuration file: [Vagrantfile](Vagrantfile)
 
+### Ports
+
+Vagrant has next ports forwarded:
+
+* 15672: RabbitMQ Management UI from Primary RabbitMQ docker container. Please use credentials configured in [ansible](#Variables) variables.
+* 15673: RabbitMQ Management UI from Secondary RabbitMQ docker container. Please use credentials configured in [ansible](#Variables) variables.
+
+
+### Commands
+
 To start VM run next command:
 ```
 vagrant up
@@ -29,14 +39,25 @@ vagrant destroy
 
 Main configuration file [setup.yml](setup.yml)
 
+### Variables
+
+* python_version: python version to install on host machine.
+* pip: name of python pip module package
+* pip_modules: name of pip modules to install. List separated by spaces
+* ansible_python_interpreter: version of python to use by ansible. Some ansible modules require python3
+* mysql_root_password: mysql root password configured by ansible for mysql docker container
+* docker_network: name of docker network. All containters will be started using the same docker network
+* rabbitmq_user: RabbitMQ admin username to access Management UI
+* rabbitmq_password: RabbitMQ admin password to access Management UI
+
+### Roles
+
 Ansible has next roles:
 * python: to install python version 3.7 (or any other, defined by variable). It also installs pip and pip modules if defined
 * docker: to install docker on host. Requires pip docker module
 * [redis](#Redis)
 * [mysql](#Mysql)
 * [rabbitmq](#RabbitMQ)
-
-### Roles
 
 #### Mysql
 
@@ -61,9 +82,5 @@ Provisions docker container with redis.
 
 #### RabbitMQ
 
-Provisions docker container with RabbitMQ.
+Provisions docker containers with RabbitMQ. Two docker containers: primary and secondary. They works together as cluster. Used `lucifer8591/rabbitmq-server:3.7.17` docker image for testing purposes.
 
-##### TODO
-* Implement Ansible Playbook to deploy RabbitMQ cluster in docker containers.
-* After first playbook run, RabbitMQ cluster must be properly initialized.
-* Management interface must be present, admin username and password must be configurable via Ansible variables.

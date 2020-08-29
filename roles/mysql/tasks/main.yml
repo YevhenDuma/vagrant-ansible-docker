@@ -20,11 +20,6 @@
     - "my.cnf"
     - "sql-mode.cnf"
 
-- name: Create docker network
-  docker_network:
-    name: "{{ mysql_network }}"
-    state: present
-
 - name: Run mysql 5.7 server
   docker_container:
     env:
@@ -34,7 +29,7 @@
       traefik.enable: "false"
     name: "{{ mysql_container_name }}"
     networks:
-      - name: "{{ mysql_network }}"
+      - name: "{{ docker_network }}"
     ports:
       - "{{ mysql_port }}:3306"
     pull: true
