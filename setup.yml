@@ -18,4 +18,4 @@
     - role: docker
     - role: rabbitmq
     - role: redis
-    # - role: mysql
+    - role: mysql

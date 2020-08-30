@@ -46,7 +46,9 @@ vagrant provision
 
 Main configuration file [setup.yml](setup.yml)
 
-### Variables
+### Global variables
+
+Global variables used in ansible playbook so it's easier to find or update it. Some roles have additional variables defined inside role.
 
 * python_version: python version to install on host machine.
 * pip: name of python pip module package
@@ -71,9 +73,9 @@ Ansible has next roles:
 Provisions docker container with redis.
 
 Few notes:
-* from version 6(?) redis requires 3 nodes to setup cluster
+* redis version 6 requires 3 nodes to setup cluster
 * I am using redis-cli to initialize redis cluster
-* Ubuntu 18.04 has redis-cli version 4.0 wcich doesn't support cluster command
+* Ubuntu 18.04 has redis-cli version 4.0 which doesn't support cluster command
 * redis-cli executed from redis docker container
 * redis-cli requires IP addresses (not a hostname!) to initialize redis cluster
 
@@ -83,7 +85,7 @@ Provisions docker containers with RabbitMQ. Two docker containers: primary and s
 
 #### Mysql
 
-Provisions docker container with mysql.
+Provisions docker container with mysql. Only one docker container. No replication or clustering.
 
 ##### TODO
 
