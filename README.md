@@ -14,7 +14,9 @@ Vagrant has next ports forwarded:
 
 * 15672: RabbitMQ Management UI from Primary RabbitMQ docker container. Please use credentials configured in [ansible](#Variables) variables.
 * 15673: RabbitMQ Management UI from Secondary RabbitMQ docker container. Please use credentials configured in [ansible](#Variables) variables.
-
+* 7000: Redis-1 node from [redis](#Redis) role.
+* 7001: Redis-2 node from [redis](#Redis) role.
+* 7002: Redis-3 node from [redis](#Redis) role.
 
 ### Commands
 
@@ -33,6 +35,11 @@ vagrant halt
 To destroy VM:
 ```
 vagrant destroy
+```
+
+To provision/reprovision VM:
+```
+vagrant provision
 ```
 
 ## Ansible
