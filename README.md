@@ -59,6 +59,21 @@ Ansible has next roles:
 * [mysql](#Mysql)
 * [rabbitmq](#RabbitMQ)
 
+#### Redis
+
+Provisions docker container with redis.
+
+Few notes:
+* from version 6(?) redis requires 3 nodes to setup cluster
+* I am using redis-cli to initialize redis cluster
+* Ubuntu 18.04 has redis-cli version 4.0 wcich doesn't support cluster command
+* redis-cli executed from redis docker container
+* redis-cli requires IP addresses (not a hostname!) to initialize redis cluster
+
+#### RabbitMQ
+
+Provisions docker containers with RabbitMQ. Two docker containers: primary and secondary. They works together as cluster. Used `lucifer8591/rabbitmq-server:3.7.17` docker image for testing purposes.
+
 #### Mysql
 
 Provisions docker container with mysql.
@@ -68,19 +83,3 @@ Provisions docker container with mysql.
 * Master and slave in Docker containers.
 * First playbook run must result in replication process running with now errors.
 * MySQL data directories must be persisted on host’s disk.
-
-#### Redis
-
-Provisions docker container with redis.
-
-##### TODO
-
-* Implement Ansible playbook to deploy Redis cluster in docker containers.
-* After first playbook run, Redis cluster must be properly initialized.
-* Redis data should be persistent on host.
-
-
-#### RabbitMQ
-
-Provisions docker containers with RabbitMQ. Two docker containers: primary and secondary. They works together as cluster. Used `lucifer8591/rabbitmq-server:3.7.17` docker image for testing purposes.
-
