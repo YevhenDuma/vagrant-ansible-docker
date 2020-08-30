@@ -4,7 +4,9 @@
   vars:
     python_version: python3.7
     pip: python3-pip
-    pip_modules: docker
+    pip_modules:
+      - docker
+      - redis
     ansible_python_interpreter: /usr/bin/python3
     mysql_root_password: 'iu4cheeCiet7oeRa'
     docker_network: testtask
@@ -15,5 +17,5 @@
     - role: python
     - role: docker
     - role: rabbitmq
-    - role: mysql
     - role: redis
+    - role: mysql

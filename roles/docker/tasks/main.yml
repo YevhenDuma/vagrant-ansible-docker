@@ -2,10 +2,16 @@
 # Fetches the docker installation script
 # from `get.docker.com` and then pipes the
 # script to `sh` so that it gets executed.
-- name: 'install docker'
+- name: Install docker
   command: 'bash -c "curl -fsSL https://get.docker.com/ | sh"'
 
 - name: Create docker network
   docker_network:
     name: "{{ docker_network }}"
     state: present
+
+- name: Create data directory if it does not exist
+  file:
+    path: /data
+    state: directory
+    mode: '0755'

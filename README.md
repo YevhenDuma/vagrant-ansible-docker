@@ -14,7 +14,9 @@ Vagrant has next ports forwarded:
 
 * 15672: RabbitMQ Management UI from Primary RabbitMQ docker container. Please use credentials configured in [ansible](#Variables) variables.
 * 15673: RabbitMQ Management UI from Secondary RabbitMQ docker container. Please use credentials configured in [ansible](#Variables) variables.
-
+* 7000: Redis-1 node from [redis](#Redis) role.
+* 7001: Redis-2 node from [redis](#Redis) role.
+* 7002: Redis-3 node from [redis](#Redis) role.
 
 ### Commands
 
@@ -35,11 +37,18 @@ To destroy VM:
 vagrant destroy
 ```
 
+To provision/reprovision VM:
+```
+vagrant provision
+```
+
 ## Ansible
 
 Main configuration file [setup.yml](setup.yml)
 
-### Variables
+### Global variables
+
+Global variables used in ansible playbook so it's easier to find or update it. Some roles have additional variables defined inside role.
 
 * python_version: python version to install on host machine.
 * pip: name of python pip module package
@@ -59,28 +68,27 @@ Ansible has next roles:
 * [mysql](#Mysql)
 * [rabbitmq](#RabbitMQ)
 
+#### Redis
+
+Provisions docker container with redis.
+
+Few notes:
+* redis version 6 requires 3 nodes to setup cluster
+* I am using redis-cli to initialize redis cluster
+* Ubuntu 18.04 has redis-cli version 4.0 which doesn't support cluster command
+* redis-cli executed from redis docker container
+* redis-cli requires IP addresses (not a hostname!) to initialize redis cluster
+
+#### RabbitMQ
+
+Provisions docker containers with RabbitMQ. Two docker containers: primary and secondary. They works together as cluster. Used `lucifer8591/rabbitmq-server:3.7.17` docker image for testing purposes.
+
 #### Mysql
 
-Provisions docker container with mysql.
+Provisions docker container with mysql. Only one docker container. No replication or clustering.
 
 ##### TODO
 
 * Master and slave in Docker containers.
 * First playbook run must result in replication process running with now errors.
 * MySQL data directories must be persisted on host’s disk.
-
-#### Redis
-
-Provisions docker container with redis.
-
-##### TODO
-
-* Implement Ansible playbook to deploy Redis cluster in docker containers.
-* After first playbook run, Redis cluster must be properly initialized.
-* Redis data should be persistent on host.
-
-
-#### RabbitMQ
-
-Provisions docker containers with RabbitMQ. Two docker containers: primary and secondary. They works together as cluster. Used `lucifer8591/rabbitmq-server:3.7.17` docker image for testing purposes.
-

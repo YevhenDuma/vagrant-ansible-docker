@@ -7,6 +7,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.network :private_network, ip: "192.168.58.111"
     config.vm.network "forwarded_port", guest: 15672, host: 15672
     config.vm.network "forwarded_port", guest: 15673, host: 15673
+    config.vm.network "forwarded_port", guest: 7000, host: 7000
+    config.vm.network "forwarded_port", guest: 7001, host: 7001
+    config.vm.network "forwarded_port", guest: 7002, host: 7002
 
     config.vm.provider :virtualbox do |vb|
         vb.customize [
@@ -17,6 +20,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         ]
     end
     config.vm.provision "ansible_local" do |a|
+        #a.verbose = "vvv"
         a.playbook = "setup.yml"
     end
 end

@@ -13,4 +13,3 @@
 - name: install pip modules {{ pip_modules }}
   pip:
     name: "{{ pip_modules }}"
-  when: pip_modules is defined
