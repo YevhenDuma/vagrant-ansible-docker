@@ -1,81 +1,55 @@
-- name: Copy {{ redis_1_host }} config file
+- name: Install Redis Module for Python
+  pip:
+    name: redis
+
+- name: "Copy config file"
   template:
-    src: "templates/{{ redis_1_host }}_config.j2"
-    dest: "/data/{{ redis_1_host }}_config.conf"
+    src: "templates/redis_config.j2"
+    dest: "/data/redis_{{ item }}.conf"
     force: yes
     mode: 0755
+  with_sequence: count={{ redis_nodes }}
 
-- name: Start "{{ redis_1_host }}"
+- name: "Start redis_host"
   docker_container:
     command: redis-server /etc/redis/redis.conf
-    name: "{{ redis_1_host }}"
-    hostname: "{{ redis_1_host }}"
+    name: "{{ redis_host_prefix }}{{ item }}"
+    hostname: "{{ redis_host_prefix }}{{ item }}"
     image: redis:6
     state: started
     restart_policy: always
-    expose: "{{ redis_1_port }}"
-    ports: "{{ redis_1_port }}:{{ redis_1_port }}"
+    expose: "{{ redis_port_prefix }}{{ item }}"
+    ports: "{{ redis_port_prefix }}{{ item }}:{{ redis_port_prefix }}{{ item }}"
     networks:
       - name: "{{ docker_network }}"
     volumes:
-      - /data/{{ redis_1_host }}:/data
-      - /data/{{ redis_1_host }}_config.conf:/etc/redis/redis.conf
-  register: redis_1_container
+      - /data/redis_{{ item }}:/data
+      - /data/redis_{{ item }}.conf:/etc/redis/redis.conf
+  register: containers_info
+  with_sequence: count={{ redis_nodes }}
 
-- name: Copy {{ redis_2_host }} config file
-  template:
-    src: "templates/{{ redis_2_host }}_config.j2"
-    dest: "/data/{{ redis_2_host }}_config.conf"
-    force: yes
-    mode: 0755
+- name: Initialize connection_string variable
+  set_fact:
+    connection_string: ""
 
-- name: Start "{{ redis_2_host }}"
-  docker_container:
-    command: redis-server /etc/redis/redis.conf
-    name: "{{ redis_2_host }}"
-    hostname: "{{ redis_2_host }}"
-    image: redis:6
-    state: started
-    restart_policy: always
-    expose: "{{ redis_2_port }}"
-    ports: "{{ redis_2_port }}:{{ redis_2_port }}"
-    networks:
-      - name: "{{ docker_network }}"
-    volumes:
-      - /data/{{ redis_2_host }}:/data
-      - /data/{{ redis_2_host }}_config.conf:/etc/redis/redis.conf
-  register: redis_2_container
+# Install jmespath python module, required by json_query, https://github.com/ansible/ansible/issues/69148
+- name: Install python3-jmespath
+  apt:
+    name: python3-jmespath
+    state: present
+    update_cache: yes
 
-
-- name: Copy {{ redis_3_host }} config file
-  template:
-    src: "templates/{{ redis_3_host }}_config.j2"
-    dest: "/data/{{ redis_3_host }}_config.conf"
-    force: yes
-    mode: 0755
-
-- name: Start "{{ redis_3_host }}"
-  docker_container:
-    command: redis-server /etc/redis/redis.conf
-    name: "{{ redis_3_host }}"
-    hostname: "{{ redis_3_host }}"
-    image: redis:6
-    state: started
-    restart_policy: always
-    expose: "{{ redis_3_port }}"
-    ports: "{{ redis_3_port }}:{{ redis_3_port }}"
-    networks:
-      - name: "{{ docker_network }}"
-    volumes:
-      - /data/{{ redis_3_host }}:/data
-      - /data/{{ redis_3_host }}_config.conf:/etc/redis/redis.conf
-  register: redis_3_container
+- name: "Create cluster connection string"
+  with_items: "{{ containers_info.results }}"
+  loop_control:
+    label: "{{ item.ansible_facts.docker_container.NetworkSettings.IPAddress }}"
+  set_fact:
+    connection_string: "{{ connection_string }}
+      {{ item.ansible_facts.docker_container.NetworkSettings.IPAddress }}:{{ item.ansible_facts.docker_container.HostConfig.PortBindings|json_query('*[].HostPort') | first }}"
+- debug:
+    msg: "{{ connection_string }}"
 
 - name: Execute redis-cli inside docker container
   command: >
-    docker exec -i {{ redis_1_host }} bash -c
-    "redis-cli --cluster create
-    {{ redis_1_container.ansible_facts.docker_container.NetworkSettings.IPAddress }}:7000
-    {{ redis_2_container.ansible_facts.docker_container.NetworkSettings.IPAddress }}:7001
-    {{ redis_3_container.ansible_facts.docker_container.NetworkSettings.IPAddress }}:7002
-    --cluster-yes"
+    docker exec -i {{redis_host_prefix}}1 bash -c
+    "redis-cli --cluster create {{ connection_string }} --cluster-yes"

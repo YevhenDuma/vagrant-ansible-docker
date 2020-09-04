@@ -1,4 +1,4 @@
-port {{ redis_2_port }}
+port {{ redis_port_prefix }}{{ item }}
 cluster-enabled {{ cluster_enabled }}
 cluster-config-file {{ cluster_config_file }}
 cluster-node-timeout {{ cluster_node_timeout }}
