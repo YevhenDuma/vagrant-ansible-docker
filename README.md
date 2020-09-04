@@ -52,12 +52,12 @@ Global variables used in ansible playbook so it's easier to find or update it. S
 
 * python_version: python version to install on host machine.
 * pip: name of python pip module package
-* pip_modules: name of pip modules to install. List separated by spaces
 * ansible_python_interpreter: version of python to use by ansible. Some ansible modules require python3
 * mysql_root_password: mysql root password configured by ansible for mysql docker container
 * docker_network: name of docker network. All containters will be started using the same docker network
 * rabbitmq_user: RabbitMQ admin username to access Management UI
 * rabbitmq_password: RabbitMQ admin password to access Management UI
+* redis_nodes: amount of redis nodes to start. Please note that they will be configured as cluster.
 
 ### Roles
 
@@ -73,11 +73,11 @@ Ansible has next roles:
 Provisions docker container with redis.
 
 Few notes:
-* redis version 6 requires 3 nodes to setup cluster
-* I am using redis-cli to initialize redis cluster
+* redis version 6 requires at least 3 nodes to setup cluster
+* redis-cli used to initialize redis cluster
 * Ubuntu 18.04 has redis-cli version 4.0 which doesn't support cluster command
-* redis-cli executed from redis docker container
-* redis-cli requires IP addresses (not a hostname!) to initialize redis cluster
+* redis-cli executed inside redis_1 docker container
+* redis-cli requires IP addresses (not a hostname!) to initialize redis cluster - [opened issue](https://github.com/redis/redis/issues/2186)
 
 #### RabbitMQ
 

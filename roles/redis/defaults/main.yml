@@ -1,9 +1,5 @@
-redis_1_port: 7000
-redis_1_host: redis_1
-redis_2_port: 7001
-redis_2_host: redis_2
-redis_3_port: 7002
-redis_3_host: redis_3
+redis_host_prefix: redis_
+redis_port_prefix: 700
 cluster_enabled: "yes"
 cluster_config_file: nodes.conf
 cluster_node_timeout: 5000

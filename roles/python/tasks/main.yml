@@ -10,6 +10,3 @@
     state: present
     update_cache: yes
   when: pip is defined
-- name: install pip modules {{ pip_modules }}
-  pip:
-    name: "{{ pip_modules }}"
