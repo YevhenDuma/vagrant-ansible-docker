@@ -8,6 +8,8 @@ As base image used Ububtu 18.04.
 
 Configuration file: [Vagrantfile](Vagrantfile)
 
+Added workaround for python-jmespath.
+
 ### Ports
 
 Vagrant has next ports forwarded:
@@ -102,4 +104,5 @@ Few notes:
 
 
 ## TODO
-* fix problem with `python-jmespath`
+* add check if mysql is already in master-slave mode. As for now playbook fail on second run.
+* add check if redis nodes already in cluster. Now playbook will fail on second run.
