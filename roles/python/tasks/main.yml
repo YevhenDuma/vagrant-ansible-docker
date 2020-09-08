@@ -10,3 +10,21 @@
     state: present
     update_cache: yes
   when: pip is defined
+
+# Install jmespath python module, required by json_query, https://github.com/ansible/ansible/issues/69148
+- name: Install python-jmespath
+  apt:
+    name: python-jmespath
+    state: present
+    update_cache: yes
+# Neet to reinitialize connection, to get python-jmespath working
+# - name: reset ssh connection
+#   meta: reset_connection
+
+# - name: Refresh inventory to ensure new instaces exist in inventory
+#   meta: refresh_inventory
+
+# - name: Clear gathered facts from all currently targeted hosts
+#   meta: clear_facts
+# - name: Kill own ssh connections
+#   ssh-reconnect:

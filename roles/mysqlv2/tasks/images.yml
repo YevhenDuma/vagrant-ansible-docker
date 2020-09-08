@@ -1,0 +1,10 @@
+---
+# getting the docker image via pull
+- name: Pull the MySQL (Percona) Images
+  docker_image:
+     name: percona/percona-server
+     tag: "{{ item }}"
+  with_items:
+    - "5.6"
+    - "5.7"
+

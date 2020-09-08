@@ -1,0 +1,33 @@
+---
+- name: Create data directory if it does not exist
+  file:
+    path: /data/mysql/mysql{{ item }}/lib
+    state: directory
+    mode: '0755'
+    owner: '1001' # mysql use uid inside a container
+  with_sequence: start=1 end="{{ mysql_servers }}"
+
+- name: Create backups directory if it does not exist
+  file:
+    path: /data/mysql/mysql{{ item }}/backups
+    state: directory
+    mode: '0755'
+    owner: '1001' # mysql use uid inside a container
+  with_sequence: start=1 end="{{ mysql_servers }}"
+
+- name: Create containers
+  docker_container:
+      name: "mysql{{ item }}"
+      image: "percona/percona-server:{{ mysql_image_version }}"
+      hostname: "mysql{{ item }}"
+      detach: yes
+      volumes:
+        - "{{ role_path }}/my.cnf.mysql{{ item }}:/etc/my.cnf"
+        - "/data/mysql/mysql{{ item }}/backups:/var/backups/mysql"
+        - "/data/mysql/mysql{{ item }}/lib:/var/lib/mysql"
+      networks:
+        - name: "{{ docker_network_name }}"
+      ports: "{{ mysql_port_prefix }}{{ item }}:3306"
+      env:
+        MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+  with_sequence: start=1 end="{{ mysql_servers }}"

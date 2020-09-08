@@ -1,2 +1,3 @@
 .vagrant
 *.log
+roles/mysqlv2/my.cnf.mysql*
