@@ -1,10 +1,9 @@
 ---
-# tasks file for containers
+#tasks file for containers
 - include: images.yml
 - include: network.yml
 - include: mysql-conf.yml
 - include: container.yml
 - include: set-replication.yml
   when: mysql_servers|int > 1
-- name: Update apt and install mysql-client
-  apt: update_cache=yes name=mysql-client
+- include: user.yml

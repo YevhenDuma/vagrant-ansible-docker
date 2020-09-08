@@ -9,6 +9,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.network "forwarded_port", guest: 15673, host: 15673
     config.vm.network "forwarded_port", guest: 7001, host: 7001
     config.vm.network "forwarded_port", guest: 13301, host: 3306
+    config.vm.network "forwarded_port", guest: 13302, host: 3307
 
     config.vm.provider :virtualbox do |vb|
         vb.customize [
@@ -18,6 +19,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             '--cpus', '2'
         ]
     end
+
+# Workaround to install python-jmespath.
+# I was not able to install it via ansible, was complaining that module is missing
+
+$script = <<SCRIPT
+#!/bin/bash
+apt-get update && apt-get install -y python-jmespath
+SCRIPT
+
+
+    config.vm.provision "shell", inline: $script
+
     config.vm.provision "ansible_local" do |a|
         #a.verbose = "vvv"
         a.playbook = "setup.yml"

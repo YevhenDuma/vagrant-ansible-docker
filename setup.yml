@@ -15,6 +15,6 @@
   roles:
     - role: python
     - role: docker
-    # - role: rabbitmq
-    # - role: redis
+    - role: rabbitmq
+    - role: redis
     - role: mysqlv2

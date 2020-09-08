@@ -8,6 +8,8 @@ As base image used Ububtu 18.04.
 
 Configuration file: [Vagrantfile](Vagrantfile)
 
+Added workaround for python-jmespath.
+
 ### Ports
 
 Vagrant has next ports forwarded:
@@ -85,7 +87,7 @@ Few notes:
 
 Provisions docker containers with RabbitMQ. Two docker containers: primary and secondary. They works together as cluster. Used `lucifer8591/rabbitmq-server:3.7.17` docker image for testing purposes.
 
-To access Admin UI, enter http://localhost:15672/#/ in your local browser. User and password defined [here](setup.yml)
+To access Admin UI, enter [http://localhost:15672/](http://localhost:15672/)  in your local browser. User and password defined [here](setup.yml)
 
 #### Mysql
 
@@ -97,8 +99,10 @@ Few notes:
 * role with name mysqlv2 is used. role with name mysql is my try to create this role from scratch, however faced problems, so to save time used role from github.
 * this role has variable with name `mysql_port_prefix` . Idea of this variable - to have mysql nodes with ports prefix+1, prefix+2, for example 13301, 13302. So it's easier to access service.
 * in order to verify master-slave replication, you will need to ssh into vagrant via `vagrant ssh`, next access slave via `mysql -u root -h 127.0.0.1 -P 13302` , and then run next SQL query `SHOW SLAVE STATUS;`
+* also as additional step ansible creates user root@%, so it's possible to access mysql master via `mysql -u root -h 127.0.0.1 -P 3307 -p` using password from [here](setup.yml) and then run next SQL query `SHOW SLAVE STATUS;`
 * percona mysql images runs as user `mysql` with uid `1001`.
 
 
 ## TODO
-* fix problem with `python-jmespath`
+* add check if mysql is already in master-slave mode. As for now playbook fail on second run.
+* add check if redis nodes already in cluster. Now playbook will fail on second run.
