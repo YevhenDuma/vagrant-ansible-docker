@@ -1,0 +1,75 @@
+- name: Install required mysql packages
+  apt: name={{ item }} update_cache=yes
+  loop: [ 'python3-dev','libmysqlclient-dev']
+
+- name: Install Mysql Module for Python
+  pip:
+    name:
+      - mysqlclient
+
+- name: Ensure replication user exists on master.
+  mysql_user:
+    name: "{{ mysql.replication.username }}"
+    password: "{{ mysql.replication.password }}"
+    priv: "{{ mysql.replication.priv | default('*.*:REPLICATION SLAVE,REPLICATION CLIENT') }}"
+    state: present
+    login_host: "127.0.0.1"
+    login_port: "{{ mysql.master.port }}"
+    login_user: "{{ mysql_root_user }}"
+    login_password: "{{ mysql_root_password }}"
+
+# - name: Set master as master
+#   mysql_replication:
+#     mode: changemaster
+#     master_host: "{{ mysql.master.container_name }}"
+#     master_user: "{{ mysql.replication.username }}"
+#     master_password: "{{ mysql.replication.password }}"
+#     login_user: "{{ mysql_root_user }}"
+#     login_password: "{{ mysql_root_password }}"
+#     login_host: "127.0.0.1"
+#     login_port: "{{ mysql.master.port }}"
+
+- name: Check slave replication status.
+  mysql_replication:
+    mode: getslave
+    login_user: "{{ mysql_root_user }}"
+    login_password: "{{ mysql_root_password }}"
+    login_host: "127.0.0.1"
+    login_port: "{{ mysql.slave.port }}"
+  ignore_errors: true
+  register: slave
+
+- name: Check master replication status.
+  mysql_replication:
+    mode: getmaster
+    login_host: "127.0.0.1"
+    login_port: "{{ mysql.master.port }}"
+    login_user: "{{ mysql_root_user }}"
+    login_password: "{{ mysql_root_password }}"
+  register: master
+
+- debug:
+    msg: "{{ master }}"
+
+- name: Configure replication on the slave.
+  mysql_replication:
+    mode: changemaster
+    master_host: "{{ mysql.master.container_name }}"
+    master_user: "{{ mysql.replication.username }}"
+    master_password: "{{ mysql.replication.password }}"
+    master_log_file: "{{ master.File }}"
+    master_log_pos: "{{ master.Position }}"
+    login_user: "{{ mysql_root_user }}"
+    login_password: "{{ mysql_root_password }}"
+    login_host: "127.0.0.1"
+    login_port: "{{ mysql.slave.port }}"
+  ignore_errors: True
+
+- name: Start replication.
+  mysql_replication:
+    mode: startslave
+    login_user: "{{ mysql_root_user }}"
+    login_password: "{{ mysql_root_password }}"
+    login_host: "127.0.0.1"
+    login_port: "{{ mysql.slave.port }}"
+

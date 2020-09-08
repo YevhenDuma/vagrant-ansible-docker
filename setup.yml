@@ -5,15 +5,16 @@
     python_version: python3.7
     pip: python3-pip
     ansible_python_interpreter: /usr/bin/python3
-    mysql_root_password: 'iu4cheeCiet7oeRa'
     docker_network: testtask
     rabbitmq_user: admin
-    rabbitmq_password: 'iu4cheeCiet7oeRa'
+    rabbitmq_password: 'sheephaegievae5T'
     redis_nodes: 3
+    mysql_servers: 2
+    mysql_root_password: 'iu4cheeCiet7oeRa'
 
   roles:
     - role: python
     - role: docker
-    - role: rabbitmq
-    - role: redis
-    - role: mysql
+    # - role: rabbitmq
+    # - role: redis
+    - role: mysqlv2

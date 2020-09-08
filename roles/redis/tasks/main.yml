@@ -28,16 +28,17 @@
   register: containers_info
   with_sequence: count={{ redis_nodes }}
 
+- name: Execute redis-cli inside docker container
+  command: >
+    docker exec -i {{ redis_host_prefix }}1 bash -c
+    "redis-cli --cluster info localhost:7001"
+  register: cluster_status
+
+## TODO: verify if cluster already exists, and if yes, update following steps
+
 - name: Initialize connection_string variable
   set_fact:
     connection_string: ""
-
-# Install jmespath python module, required by json_query, https://github.com/ansible/ansible/issues/69148
-- name: Install python3-jmespath
-  apt:
-    name: python3-jmespath
-    state: present
-    update_cache: yes
 
 - name: "Create cluster connection string"
   with_items: "{{ containers_info.results }}"
@@ -51,5 +52,5 @@
 
 - name: Execute redis-cli inside docker container
   command: >
-    docker exec -i {{redis_host_prefix}}1 bash -c
+    docker exec -i {{ redis_host_prefix }}1 bash -c
     "redis-cli --cluster create {{ connection_string }} --cluster-yes"

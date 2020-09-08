@@ -1,0 +1,42 @@
+---
+- name: Ensure mysql dirs exist
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  with_items:
+    - "{{ mysql_backups_dir }}"
+    - "{{ mysql_conf_dir }}"
+    - "{{ mysql_lib_dir }}"
+
+- name: Copy mysql config files
+  template:
+    src: "templates/{{ item }}.j2"
+    dest: "{{ mysql_conf_dir }}/{{ item }}"
+    force: yes
+  with_items:
+    - "character-set.cnf"
+    - "my.cnf"
+    - "sql-mode.cnf"
+
+- name: Run mysql 5.7 server
+  docker_container:
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ mysql_root_password }}"
+    image: mysql:5.7
+    labels:
+      traefik.enable: "false"
+    name: "{{ mysql_container_name }}"
+    networks:
+      - name: "{{ docker_network }}"
+    ports:
+      - "{{ mysql_port }}:3306"
+    pull: true
+    recreate: true
+    restart_policy: always
+    state: "{{ mysql_state }}"
+    volumes:
+      - "{{ mysql_backups_dir }}:/var/backups/mysql"
+      - "{{ mysql_conf_dir }}:/etc/mysql/conf.d"
+      - "{{ mysql_lib_dir }}:/var/lib/mysql"

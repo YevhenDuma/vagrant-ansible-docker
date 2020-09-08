@@ -8,7 +8,21 @@ mysql_config_mysqld:
   skip_name_resolve: "true"
 mysql_container_name: mysql
 mysql_env: {}
-mysql_lib_dir: /var/mysql/lib
 mysql_network: mysql
-mysql_port: 3306
 mysql_state: started
+mysql_root_user: root
+
+mysql:
+  master:
+    container_name: mysql_master
+    port: 3306
+    lib_dir: /var/mysql/master/lib
+    backups_dir: /var/mysql/master/backups
+  slave:
+    container_name: mysql_slave
+    port: 3307
+    lib_dir: /var/mysql/slave/lib
+    backups_dir: /var/mysql/slave/backups
+  replication:
+    username: replication
+    password: Aepeena6Thi3ohzo

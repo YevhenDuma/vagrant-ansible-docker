@@ -51,13 +51,15 @@ Main configuration file [setup.yml](setup.yml)
 Global variables used in ansible playbook so it's easier to find or update it. Some roles have additional variables defined inside role.
 
 * python_version: python version to install on host machine.
-* pip: name of python pip module package
-* ansible_python_interpreter: version of python to use by ansible. Some ansible modules require python3
-* mysql_root_password: mysql root password configured by ansible for mysql docker container
-* docker_network: name of docker network. All containters will be started using the same docker network
-* rabbitmq_user: RabbitMQ admin username to access Management UI
-* rabbitmq_password: RabbitMQ admin password to access Management UI
+* pip: name of python pip module package.
+* ansible_python_interpreter: version of python to use by ansible. Some ansible modules require python3.
+* docker_network: name of docker network. All containters will be started using the same docker network.
+* rabbitmq_user: RabbitMQ admin username to access Management UI.
+* rabbitmq_password: RabbitMQ admin password to access Management UI.
 * redis_nodes: amount of redis nodes to start. Please note that they will be configured as cluster.
+* mysql_servers: amount of mysql nodes to start. First one will be master, others - slaves.
+* mysql_root_password: mysql root password configured by ansible for mysql docker container.
+
 
 ### Roles
 
@@ -83,12 +85,20 @@ Few notes:
 
 Provisions docker containers with RabbitMQ. Two docker containers: primary and secondary. They works together as cluster. Used `lucifer8591/rabbitmq-server:3.7.17` docker image for testing purposes.
 
+To access Admin UI, enter http://localhost:15672/#/ in your local browser. User and password defined [here](setup.yml)
+
 #### Mysql
 
 Provisions docker container with mysql. Only one docker container. No replication or clustering.
 
-##### TODO
+Role taken from [here](https://github.com/nethalo/ansible-mysql-docker), with small updates.
 
-* Master and slave in Docker containers.
-* First playbook run must result in replication process running with now errors.
-* MySQL data directories must be persisted on host’s disk.
+Few notes:
+* role with name mysqlv2 is used. role with name mysql is my try to create this role from scratch, however faced problems, so to save time used role from github.
+* this role has variable with name `mysql_port_prefix` . Idea of this variable - to have mysql nodes with ports prefix+1, prefix+2, for example 13301, 13302. So it's easier to access service.
+* in order to verify master-slave replication, you will need to ssh into vagrant via `vagrant ssh`, next access slave via `mysql -u root -h 127.0.0.1 -P 13302` , and then run next SQL query `SHOW SLAVE STATUS;`
+* percona mysql images runs as user `mysql` with uid `1001`.
+
+
+## TODO
+* fix problem with `python-jmespath`
