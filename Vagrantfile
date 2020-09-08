@@ -19,6 +19,18 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             '--cpus', '2'
         ]
     end
+
+# Workaround to install python-jmespath.
+# I was not able to install it via ansible, was complaining that module is missing
+
+$script = <<SCRIPT
+#!/bin/bash
+apt-get update && apt-get install -y python-jmespath
+SCRIPT
+
+
+    config.vm.provision "shell", inline: $script
+
     config.vm.provision "ansible_local" do |a|
         #a.verbose = "vvv"
         a.playbook = "setup.yml"
