@@ -87,7 +87,7 @@ Few notes:
 
 Provisions docker containers with RabbitMQ. Two docker containers: primary and secondary. They works together as cluster. Used `lucifer8591/rabbitmq-server:3.7.17` docker image for testing purposes.
 
-To access Admin UI, enter http://localhost:15672/#/ in your local browser. User and password defined [here](setup.yml)
+To access Admin UI, enter [http://localhost:15672/](http://localhost:15672/)  in your local browser. User and password defined [here](setup.yml)
 
 #### Mysql
 
