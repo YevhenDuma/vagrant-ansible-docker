@@ -9,6 +9,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.network "forwarded_port", guest: 15673, host: 15673
     config.vm.network "forwarded_port", guest: 7001, host: 7001
     config.vm.network "forwarded_port", guest: 13301, host: 3306
+    config.vm.network "forwarded_port", guest: 13302, host: 3307
 
     config.vm.provider :virtualbox do |vb|
         vb.customize [

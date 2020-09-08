@@ -1,0 +1,21 @@
+- name: Install libmysqlclient-dev
+  apt:
+    name: "libmysqlclient-dev"
+    state: present
+    update_cache: yes
+
+- name: Install Docker Module for Python
+  pip:
+    name: mysqlclient
+
+- name: Ensure no user named 'root'@'%' exists
+  mysql_user:
+    # login_user: root
+    # login_password: "{{ mysql_root_password }}"
+    login_host: "127.0.0.1"
+    login_port: "13301"
+    name: root
+    password: "{{ mysql_root_password }}"
+    host: '%'
+    state: present
+    priv: '*.*:ALL'

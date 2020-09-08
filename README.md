@@ -97,6 +97,7 @@ Few notes:
 * role with name mysqlv2 is used. role with name mysql is my try to create this role from scratch, however faced problems, so to save time used role from github.
 * this role has variable with name `mysql_port_prefix` . Idea of this variable - to have mysql nodes with ports prefix+1, prefix+2, for example 13301, 13302. So it's easier to access service.
 * in order to verify master-slave replication, you will need to ssh into vagrant via `vagrant ssh`, next access slave via `mysql -u root -h 127.0.0.1 -P 13302` , and then run next SQL query `SHOW SLAVE STATUS;`
+* also as additional step ansible creates user root@%, so it's possible to access mysql master via `mysql -u root -h 127.0.0.1 -P 3307 -p` using password from [here](setup.yml) and then run next SQL query `SHOW SLAVE STATUS;`
 * percona mysql images runs as user `mysql` with uid `1001`.
 
 
